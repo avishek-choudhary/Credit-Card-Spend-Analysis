@@ -1,0 +1,177 @@
+Credit Card Spend Analysis
+
+# Q1. Which city has the highest amount of transactions over the years?
+
+SELECT city, SUM(amount) AS amount
+FROM transactions
+GROUP BY city
+ORDER BY amount DESC
+LIMIT 1;
+
+# city, amount
+Greater Mumbai, India, 576751476
+
+# Q2. Which card type has the highest amount of transactions over the years?
+
+SELECT card_type, SUM(amount) AS amount
+FROM transactions
+GROUP BY card_type
+ORDER BY amount DESC
+LIMIT 1;
+
+# card_type, amount
+Silver, 1069613713
+
+# Q3. Which expense type has the highest amount of transactions over the years?
+
+SELECT exp_type, SUM(amount) AS amount
+FROM transactions
+GROUP BY exp_type
+ORDER BY amount DESC
+LIMIT 1;
+
+# exp_type, amount
+Bills, 907072473
+
+# Q4. What is the gender breakdown of total amount spent?
+
+WITH demographics AS (
+SELECT gender, SUM(amount) AS amount_spent
+FROM transactions
+WHERE gender = 'F'
+)
+SELECT d.gender, amount_spent, CONCAT(ROUND(100*amount_spent/SUM(amount)), "%") AS percentage
+FROM demographics AS d
+JOIN transactions
+
+# gender, amount_spent, percentage
+F, 2205311030, 54%
+
+WITH demographics AS (
+SELECT gender, SUM(amount) AS amount_spent
+FROM transactions
+WHERE gender = 'M'
+)
+SELECT d.gender, amount_spent, CONCAT(ROUND(100*amount_spent/SUM(amount)), "%") AS percentage
+FROM demographics AS d
+JOIN transactions
+
+# gender, amount_spent, percentage
+M, 1869522343, 46%
+
+# Q5a. What is the total amount of spent by females vis a vis card_type?
+
+SELECT card_type, SUM(amount) AS amount_spent
+FROM transactions
+WHERE gender = 'F'
+GROUP BY 1
+ORDER BY 2 DESC
+
+# card_type, amount_spent
+Silver, 602433469
+Signature, 548005149
+Platinum, 531940229
+Gold, 522932183
+
+# Q5b. What is the total amount of spent by males vis a vis card_type?
+
+SELECT card_type, SUM(amount) AS amount_spent
+FROM transactions
+WHERE gender = 'M'
+GROUP BY 1
+ORDER BY 2 DESC
+
+# card_type, amount_spent
+Platinum, 475698790
+Silver, 467180244
+Signature, 465035956
+Gold, 461607353
+
+# Q6. Which are the top 5 cities where men has spent most money in?
+
+SELECT city, sum(amount) as amount_spent, count(amount) as transactions
+FROM transactions
+WHERE gender = 'M'
+GROUP BY city
+ORDER BY amount_spent DESC
+LIMIT 5;
+
+# city, amount_spent, transactions
+Ahmedabad, India, 248622035, 1615
+Bengaluru, India, 241128293, 1592
+Greater Mumbai, India, 239134430, 1571
+Delhi, India, 233236913, 1559
+Kolkata, India, 62257704, 401
+
+# Q7. List top 5 cities with maximum no. of transactions?
+
+SELECT city, COUNT(*) AS transactions
+FROM transactions
+GROUP BY city
+ORDER BY transactions DESC
+LIMIT 5;
+
+# city, transactions
+Bengaluru, India, 3552
+Greater Mumbai, India, 3493
+Ahmedabad, India, 3491
+Delhi, India, 3482
+Hyderabad, India, 784
+
+# Q8. Show the month wise spend across the years in the descending order.
+
+SELECT month, SUM(amount) AS amount_spend
+FROM transactions
+GROUP BY 1
+ORDER BY 2 DESC;
+
+# month, amount_spend
+January, 431209556
+October, 419846007
+December, 416935415
+April, 416394734
+March, 410054446
+November, 404107968
+February, 383512624
+May, 375455609
+August, 218453126
+September, 209561433
+July, 197981416
+June, 191321039
+
+# Q9. Show the total amount spent by men via expense type.
+
+SELECT exp_type, SUM(amount) AS amount_spent
+FROM transactions
+WHERE gender ='M'
+GROUP BY 1
+ORDER BY 2 DESC;
+
+# exp_type, amount_spent
+Fuel, 396853400
+Food, 371906730
+Entertainment, 367774203
+Grocery, 352560925
+Bills, 327037004
+Travel, 53390081
+
+# Q10. What is the no. of transactions per month?
+
+SELECT month, COUNT(*) AS transactions
+FROM transactions
+GROUP BY month
+ORDER BY transactions DESC;
+
+# month, transactions
+January, 2722
+December, 2702
+October, 2665
+November, 2622
+March, 2622
+April, 2587
+May, 2436
+February, 2433
+August, 1393
+September, 1321
+July, 1310
+June, 1239
